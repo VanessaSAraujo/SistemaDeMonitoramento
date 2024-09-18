@@ -1,42 +1,24 @@
-package com.example.sistemaMonitoramento.repositories;
+package com.example.sistemaMonitoramento.interfaces;
 
 import com.example.sistemaMonitoramento.entities.DadosDiarios;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.sql.Date;
 import java.util.List;
 
-@Repository
-public class DadosDiariosRepository {
+public interface IDadosDiariosRepository extends JpaRepository<DadosDiarios, Integer> {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    List<DadosDiarios> findByPacienteId(Integer pacienteId);
 
-    @Transactional
-    public DadosDiarios salvar(DadosDiarios dadosDiarios) {
-        if (dadosDiarios.getId() == null) {
-            entityManager.persist(dadosDiarios); // Novo registro
-        } else {
-            entityManager.merge(dadosDiarios); // Atualizar registro
-        }
-        return dadosDiarios;
-    }
+    List<DadosDiarios> findByPacienteIdAndDataBetween(Integer pacienteId, Date startDate, Date endDate);
 
-    public DadosDiarios buscarPorId(Integer id) {
-        return entityManager.find(DadosDiarios.class, id);
-    }
+    List<DadosDiarios> findByData(Date data);
 
-    public List<DadosDiarios> buscarTodos() {
-        return entityManager.createQuery("FROM DadosDiarios", DadosDiarios.class).getResultList();
-    }
+    List<DadosDiarios> findByPacienteIdAndData(Integer pacienteId, Date data);
 
-    @Transactional
-    public void deletarPorId(Integer id) {
-        DadosDiarios dadosDiarios = buscarPorId(id);
-        if (dadosDiarios != null) {
-            entityManager.remove(dadosDiarios);
-        }
-    }
+    List<DadosDiarios> findByDescricaoDiaContaining(String keyword);
+
+    List<DadosDiarios> findByDesconfortoIsNotNull();
+
+
 }
