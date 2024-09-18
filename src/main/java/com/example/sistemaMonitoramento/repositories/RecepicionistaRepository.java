@@ -1,5 +1,6 @@
 package com.example.sistemaMonitoramento.repositories;
 
+import com.example.sistemaMonitoramento.entities.Clinica;
 import com.example.sistemaMonitoramento.entities.Medico;
 import com.example.sistemaMonitoramento.entities.Recepcionista;
 import com.example.sistemaMonitoramento.interfaces.IRecepcionistaRepository;
@@ -45,11 +46,16 @@ public class RecepicionistaRepository implements IRecepcionistaRepository {
     @Override
     @Transactional
     public void update(int id, Recepcionista recepcionista) {
-        TypedQuery<Recepcionista> query = entityManager
-                .createQuery("delete s from Student s WHERE s.id = :id", Recepcionista.class);
-        query.setParameter("id", id);
+        Recepcionista recepcionistaInDb = this.entityManager.find(Recepcionista.class, id);
 
-        query.executeUpdate();
+        recepcionistaInDb.setNome(recepcionista.getNome());
+        recepcionistaInDb.setClinica(recepcionista.getClinica());
+        recepcionistaInDb.setEmail(recepcionista.getEmail());
+        recepcionistaInDb.setSenha(recepcionista.getSenha());
+
+
+        this.entityManager.merge(recepcionistaInDb);
+
     }
 
     @Override

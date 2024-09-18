@@ -1,5 +1,7 @@
 package com.example.sistemaMonitoramento.repositories;
 
+import com.example.sistemaMonitoramento.entities.Clinica;
+import com.example.sistemaMonitoramento.entities.Comorbidade;
 import com.example.sistemaMonitoramento.entities.Medico;
 import com.example.sistemaMonitoramento.entities.Paciente;
 import com.example.sistemaMonitoramento.interfaces.IPacienteRepository;
@@ -45,11 +47,16 @@ public class PacienteRepository implements IPacienteRepository {
     @Override
     @Transactional
     public void update(int id, Paciente paciente) {
-        TypedQuery<Paciente> query = entityManager
-                .createQuery("delete s from Paciente s WHERE s.id = :id", Paciente.class);
-        query.setParameter("id", id);
+        Paciente pacienteInDb = this.entityManager.find(Paciente.class, id);
 
-        query.executeUpdate();
+        pacienteInDb.setNome(paciente.getNome());
+        pacienteInDb.setClinica(paciente.getClinica());
+        pacienteInDb.setComorbidade(paciente.getComorbidade());
+        pacienteInDb.setContato(paciente.getContato());
+        pacienteInDb.setEmail(paciente.getEmail());
+
+        this.entityManager.merge(pacienteInDb);
+
     }
 
     @Override

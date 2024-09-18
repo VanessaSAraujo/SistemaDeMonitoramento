@@ -1,5 +1,6 @@
 package com.example.sistemaMonitoramento.repositories;
 
+import com.example.sistemaMonitoramento.entities.DadosDiarios;
 import com.example.sistemaMonitoramento.entities.Medico;
 import com.example.sistemaMonitoramento.interfaces.IMedicoRepository;
 import jakarta.persistence.EntityManager;
@@ -44,11 +45,16 @@ public class MedicoRepository implements IMedicoRepository {
     @Override
     @Transactional
     public void update(int id, Medico medico) {
-        TypedQuery<Medico> query = entityManager
-                .createQuery("delete s from Student s WHERE s.id = :id", Medico.class);
-        query.setParameter("id", id);
+        Medico MedicoInDb = this.entityManager.find(Medico.class, id);
 
-        query.executeUpdate();
+        MedicoInDb.setClinica(medico.getClinica());
+        MedicoInDb.setContato(medico.getContato());
+        MedicoInDb.setNome(medico.getNome());
+        MedicoInDb.setCrm(medico.getCrm());
+        MedicoInDb.setEmail(medico.getEmail());
+        MedicoInDb.setEspecialidade(medico.getEspecialidade());
+
+        this.entityManager.merge(MedicoInDb);
     }
 
     @Override
